@@ -14,7 +14,6 @@
 #include <iostream>
 #include <vector>
 ros::Publisher pub;
-bool airborne;
 
 // Forces callback function
 void forcesCb(ConstContactsPtr &_msg){
@@ -63,18 +62,7 @@ void forcesCb(ConstContactsPtr &_msg){
 
 }
 
-// Position callback function
-void positionCb(const nav_msgs::Odometry::ConstPtr& msg2){
-    if (msg2->pose.pose.position.z > 0.3) {
-        airborne = true;
-    } else {
-        airborne = false;
-    }
-}
-
 int main(int _argc, char **_argv){
-    // Set variables
-    airborne = false;
 
     // Load Gazebo & ROS
     gazebo::client::setup(_argc, _argv);
@@ -86,13 +74,12 @@ int main(int _argc, char **_argv){
 
     // Create ROS node and init
     ros::NodeHandle n;
-    pub = n.advertise<contact_republisher::contacts_msg>("forces", 1000);
+    pub = n.advertise<contact_republisher::contacts_msg>("drone/contacts", 1000);
 
     // Listen to Gazebo contacts topic
-    gazebo::transport::SubscriberPtr sub = node->Subscribe("/gazebo/default/physics/contacts", forcesCb);
+    gazebo::transport::SubscriberPtr sub1 = node->Subscribe("/gazebo/trial_1_world/drone/base_link/fuselage_contact/contacts", forcesCb);
+    gazebo::transport::SubscriberPtr sub2 = node->Subscribe("/gazebo/trial_1_world/drone/base_link/mast_contact/contacts", forcesCb);
 
-    // Listen to ROS for position
-    ros::Subscriber sub2 = n.subscribe("ground_truth/state", 1000, positionCb);
 
     // Busy wait loop...replace with your own code as needed.
     // Busy wait loop...replace with your own code as needed.

@@ -74,7 +74,7 @@ int main(int _argc, char **_argv){
 
     // Create ROS node and init
     ros::NodeHandle n;
-    pub = n.advertise<contact_republisher::contacts_msg>("drone/contacts", 1000);
+    pub = n.advertise<contact_republisher::contacts_msg>("contacts", 1000);
 
     // Listen to Gazebo contacts topic
     gazebo::transport::SubscriberPtr sub1 = node->Subscribe("/gazebo/trial_1_world/drone/base_link/fuselage_contact/contacts", forcesCb);
